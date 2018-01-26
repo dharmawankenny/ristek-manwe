@@ -13,17 +13,36 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import styled from 'styled-components';
+
+import Footer from 'components/Footer';
 
 import HomePage from 'containers/HomePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
 export default function App() {
   return (
-    <div>
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route component={NotFoundPage} />
-      </Switch>
-    </div>
+    <Main>
+      <div className="content">
+        <Switch>
+          <Route exact path="/" component={HomePage} />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </div>
+      <Footer />
+    </Main>
   );
 }
+
+const Main = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  background: ${(props) => props.theme.color.white};
+
+  .content {
+    margin: 0 auto;
+    width: 100%;
+    max-width: ${(props) => props.theme.maxWidth};
+    min-height: calc(100vh - 5rem);
+  }
+`;

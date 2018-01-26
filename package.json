@@ -1,16 +1,16 @@
 {
-  "name": "react-boilerplate",
-  "version": "3.5.0",
-  "description": "A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices",
+  "name": "ristek-manwe",
+  "version": "1.0.0",
+  "description": "Signup and submission platform for Ristek 2018's Open Recruitment process.",
   "repository": {
     "type": "git",
-    "url": "git://github.com/react-boilerplate/react-boilerplate.git"
+    "url": "git://github.com/dharmawankenny/ristek-manwe.git"
   },
   "engines": {
     "npm": ">=3",
     "node": ">=5"
   },
-  "author": "Max Stoiber",
+  "author": "Kenny Reida Dharmawan, Max Stoiber, React-Boilerplate Team",
   "license": "MIT",
   "scripts": {
     "analyze:clean": "rimraf stats.json",

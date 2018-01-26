@@ -1,4 +1,5 @@
 import { injectGlobal } from 'styled-components';
+import theme from 'common/theme';
 
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
@@ -9,11 +10,16 @@ injectGlobal`
   }
 
   body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Inter UI', Helvetica, Arial, sans-serif;
+    color: ${theme.color.dark};
+    background: ${theme.color.white};
   }
 
-  body.fontLoaded {
-    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  h1,
+  h2,
+  h3,
+  button {
+    font-family: 'Circular', Helvetica, Arial, sans-serif;
   }
 
   #app {
