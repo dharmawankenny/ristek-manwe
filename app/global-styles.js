@@ -25,7 +25,10 @@ injectGlobal`
   h4,
   h5,
   h6,
-  p {
+  p,
+  input,
+  select,
+  textarea {
     font-family: 'Inter UI', Helvetica, Arial, sans-serif !important;
   }
 

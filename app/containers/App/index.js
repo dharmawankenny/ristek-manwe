@@ -26,8 +26,10 @@ import Sitemap from 'common/routing';
 
 import Footer from 'components/Footer';
 
-import HomePage from 'containers/HomePage/Loadable';
+import Dashboard from 'containers/Dashboard/Loadable';
 import Encyclopedia from 'containers/Encyclopedia/Loadable';
+import HomePage from 'containers/HomePage/Loadable';
+import Register from 'containers/Register/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
 export default function App() {
@@ -54,6 +56,8 @@ export default function App() {
         <Switch>
           <Route exact path={Sitemap.index} component={HomePage} />
           <Route exact path={Sitemap.encyclopedia} component={Encyclopedia} />
+          <Route exact path={Sitemap.register} component={Register} />
+          <Route exact path={Sitemap.dashboard} component={Dashboard} />
           <Route component={NotFoundPage} />
         </Switch>
       </div>

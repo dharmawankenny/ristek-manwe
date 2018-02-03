@@ -171,6 +171,7 @@ const Heading = styled.div`
       }
 
       ${media('mobile')} {
+        width: 100%;
         margin: 1rem 0 0;
         padding: 0.75rem 1.5rem;
         font-size: 1rem;
