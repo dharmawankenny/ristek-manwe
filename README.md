@@ -5,5 +5,4 @@ Signup and submission platform for Ristek 2018's Open Recruitment process. This 
 
 Jakarta, 26 January 2018.
 
-Made By: Kenny Reida Dharmawan
-President of Ristek Fasilkom UI 2018.
+A Creation of Ristek Fasilkom UI 2018.

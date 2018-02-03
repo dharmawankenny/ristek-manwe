@@ -10,16 +10,25 @@
  */
 
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 
-import messages from './messages';
+import styled from 'styled-components';
 
 export default class NotFound extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
-      <h1>
-        <FormattedMessage {...messages.header} />
-      </h1>
+      <FourOFour>
+        <h1>Are you lost? Go home please.</h1>
+      </FourOFour>
     );
   }
 }
+
+const FourOFour = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+`;

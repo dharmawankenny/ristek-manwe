@@ -9,6 +9,8 @@ const theme = {
     dark: '#3E495E',
     white: '#FAFAFA',
     pure: '#FFFFFF',
+    gray: '#AAAAAA',
+    snow: '#EEEEEE',
     blue: '#4197D2',
     yellow: '#FFC717',
   },

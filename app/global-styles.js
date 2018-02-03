@@ -10,7 +10,7 @@ injectGlobal`
   }
 
   body {
-    font-family: 'Inter UI', Helvetica, Arial, sans-serif;
+    font-family: 'Inter UI', Helvetica, Arial, sans-serif !important;
     color: ${theme.color.dark};
     background: ${theme.color.white};
   }
@@ -19,7 +19,14 @@ injectGlobal`
   h2,
   h3,
   button {
-    font-family: 'Circular', Helvetica, Arial, sans-serif;
+    font-family: 'Circular', Helvetica, Arial, sans-serif !important;
+  }
+
+  h4,
+  h5,
+  h6,
+  p {
+    font-family: 'Inter UI', Helvetica, Arial, sans-serif !important;
   }
 
   #app {
