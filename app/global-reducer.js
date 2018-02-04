@@ -19,7 +19,7 @@ import {
 
 const initialState = fromJS({
   user: {},
-  serverTime: {},
+  serverTime: '',
   message: '',
   loading: false,
   success: false,

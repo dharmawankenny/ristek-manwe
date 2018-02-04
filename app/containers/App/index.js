@@ -11,20 +11,10 @@
  * the linting exception.
  */
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { createStructuredSelector } from 'reselect';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
-
-import {
-  getServerTime,
-} from 'global-actions';
-
-import makeSelectGlobal from 'global-selectors';
 
 import AppleIcon from 'images/apple-touch-icon.png';
 import Favicon32 from 'images/favicon-32x32.png';
@@ -42,50 +32,39 @@ import HomePage from 'containers/HomePage/Loadable';
 import Register from 'containers/Register/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
-export class App extends Component { // eslint-disable-line react/prefer-stateless-function
-  componentDidMount() {
-    this.props.dispatch(getServerTime());
-  }
-
-  render() {
-    return (
-      <Main>
-        <Helmet
-          titleTemplate="%s - Oprec Anggota Ristek Fasilkom UI 2018"
-          defaultTitle="Open Recruitment Anggota Ristek Fasilkom UI 2018"
-          meta={[
-            { name: 'description', content: 'Open Recruitment Anggota Ristek Fasilkom UI 2018 Telah Dibuka!' },
-            { name: 'apple-mobile-web-app-title', content: 'Oprec Ristek 2018' },
-            { name: 'application-name', content: 'Oprec Ristek 2018' },
-            { name: 'theme-color', content: '#4197D2' },
-          ]}
-          link={[
-            { rel: 'apple-touch-icon', sizes: '180x180', href: `${AppleIcon}?v=rst18` },
-            { rel: 'icon', type: 'image/png', sizes: '32x32', href: `${Favicon32}?v=rst18` },
-            { rel: 'icon', type: 'image/png', sizes: '16x16', href: `${Favicon16}?v=rst18` },
-            { rel: 'mask-icon', color: '4197D2', href: `${MaskIcon}?v=rst18` },
-            { rel: 'shortcut icon', href: 'favicon.ico?v=rst18' },
-          ]}
-        />
-        <div className="content">
-          <Switch>
-            <Route exact path={Sitemap.index} component={HomePage} />
-            <Route exact path={Sitemap.encyclopedia} component={Encyclopedia} />
-            <Route exact path={Sitemap.register} component={Register} />
-            <Route exact path={Sitemap.dashboard} component={Dashboard} />
-            <Route component={NotFoundPage} />
-          </Switch>
-        </div>
-        <Footer />
-      </Main>
-    );
-  }
+export default function App() {
+  return (
+    <Main>
+      <Helmet
+        titleTemplate="%s - Oprec Anggota Ristek Fasilkom UI 2018"
+        defaultTitle="Open Recruitment Anggota Ristek Fasilkom UI 2018"
+        meta={[
+          { name: 'description', content: 'Open Recruitment Anggota Ristek Fasilkom UI 2018 Telah Dibuka!' },
+          { name: 'apple-mobile-web-app-title', content: 'Oprec Ristek 2018' },
+          { name: 'application-name', content: 'Oprec Ristek 2018' },
+          { name: 'theme-color', content: '#4197D2' },
+        ]}
+        link={[
+          { rel: 'apple-touch-icon', sizes: '180x180', href: `${AppleIcon}?v=rst18` },
+          { rel: 'icon', type: 'image/png', sizes: '32x32', href: `${Favicon32}?v=rst18` },
+          { rel: 'icon', type: 'image/png', sizes: '16x16', href: `${Favicon16}?v=rst18` },
+          { rel: 'mask-icon', color: '4197D2', href: `${MaskIcon}?v=rst18` },
+          { rel: 'shortcut icon', href: 'favicon.ico?v=rst18' },
+        ]}
+      />
+      <div className="content">
+        <Switch>
+          <Route exact path={Sitemap.index} component={HomePage} />
+          <Route exact path={Sitemap.encyclopedia} component={Encyclopedia} />
+          <Route exact path={Sitemap.register} component={Register} />
+          <Route exact path={Sitemap.dashboard} component={Dashboard} />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </div>
+      <Footer />
+    </Main>
+  );
 }
-
-App.propTypes = {
-  // global: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-};
 
 const Main = styled.div`
   width: 100%;
@@ -103,20 +82,3 @@ const Main = styled.div`
     }
   }
 `;
-
-const mapStateToProps = createStructuredSelector({
-  global: makeSelectGlobal(),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-  };
-}
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(
-  withConnect,
-)(App);
-

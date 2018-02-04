@@ -9,8 +9,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+import { getServerTime } from 'global-actions';
+import makeSelectGlobal from 'global-selectors';
 
 import Papa from 'images/paparistek.png';
 
@@ -19,7 +23,7 @@ import { media } from 'common/theme';
 
 import EncyclopediaAccordion from 'components/EncyclopediaAccordion';
 
-export class Encyclopedia extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export class Encyclopedia extends React.Component {
   static PROCEDURAL = [
     {
       title: 'Prosedur Open Recruitment',
@@ -78,6 +82,12 @@ export class Encyclopedia extends React.Component { // eslint-disable-line react
     },
   ];
 
+  componentDidMount() {
+    if (!this.props.global.loading && !this.props.global.success && !this.props.global.serverTime) {
+      this.props.dispatch(getServerTime());
+    }
+  }
+
   render() {
     return (
       <Wrapper>
@@ -105,6 +115,7 @@ export class Encyclopedia extends React.Component { // eslint-disable-line react
 }
 
 Encyclopedia.propTypes = {
+  global: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -219,13 +230,17 @@ const Context = styled.h3`
   color: ${(props) => props.theme.color.gray};
 `;
 
+const mapStateToProps = createStructuredSelector({
+  global: makeSelectGlobal(),
+});
+
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
   };
 }
 
-const withConnect = connect(null, mapDispatchToProps);
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 export default compose(
   withConnect,

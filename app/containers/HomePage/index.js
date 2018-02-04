@@ -10,15 +10,28 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+import { getServerTime } from 'global-actions';
+import makeSelectGlobal from 'global-selectors';
 
 import LandingMan from 'images/landing-man.png';
 
 import Sitemap from 'common/routing';
 import { media } from 'common/theme';
 
-export default class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+export class HomePage extends React.PureComponent {
+  componentDidMount() {
+    if (!this.props.global.loading && !this.props.global.success && !this.props.global.serverTime) {
+      this.props.dispatch(getServerTime());
+    }
+  }
+
   render() {
     return (
       <Landing>
@@ -33,6 +46,11 @@ export default class HomePage extends React.PureComponent { // eslint-disable-li
     );
   }
 }
+
+HomePage.propTypes = {
+  global: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
 
 const Landing = styled.div`
   width: 100%;
@@ -155,3 +173,19 @@ const Info = styled.div`
     margin: 0;
   }
 `;
+
+const mapStateToProps = createStructuredSelector({
+  global: makeSelectGlobal(),
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch,
+  };
+}
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
+
+export default compose(
+  withConnect,
+)(HomePage);
