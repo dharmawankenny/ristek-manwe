@@ -15,7 +15,7 @@ import {
 const initialState = fromJS({
   loading: false,
   success: false,
-  error: true,
+  error: false,
   input: {
     cv: '',
     phone: '',
