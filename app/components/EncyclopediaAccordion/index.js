@@ -53,6 +53,7 @@ const Accordion = styled.button`
   margin: 1rem 0 0;
   padding: 0;
   outline: none;
+  cursor: pointer;
 
   &:hover,
   &:focus {

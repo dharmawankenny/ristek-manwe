@@ -13,6 +13,7 @@ const theme = {
     snow: '#EEEEEE',
     blue: '#4197D2',
     yellow: '#FFC717',
+    red: '#D72F3D',
   },
 };
 
