@@ -110,7 +110,7 @@ export class Dashboard extends React.Component {
         {firstDivisionTasks.map((task) => (
           <Task key={task.id} background="blue" color="white" accent="dark">
             <h1>{task.name}</h1>
-            <h4>{task.description}}</h4>
+            <h4 dangerouslySetInnerHtml={{ __html: task.description }} />
             <h4>Lampiran: {task.description_link}</h4>
             <div className="inputWrapper">
               <input
@@ -125,7 +125,7 @@ export class Dashboard extends React.Component {
         {secondDivisionTasks.map((task) => (
           <Task key={task.id} background="yellow" color="dark" accent="dark">
             <h1>{task.name}</h1>
-            <h4>{task.description}}</h4>
+            <h4 dangerouslySetInnerHtml={{ __html: task.description }} />
             <h4>Lampiran: {task.description_link}</h4>
             <div className="inputWrapper">
               <input
