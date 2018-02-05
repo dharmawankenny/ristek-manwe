@@ -11,6 +11,8 @@ import {
   SET_INPUT,
   POST,
   POST_SUCCESS,
+  FETCH_INITIAL,
+  FETCH_INITIAL_DONE,
 } from './constants';
 
 export function defaultAction() {
@@ -47,5 +49,19 @@ export function post() {
 export function postSuccess() {
   return {
     type: POST_SUCCESS,
+  };
+}
+
+export function fetchInitial(token) {
+  return {
+    type: FETCH_INITIAL,
+    token,
+  };
+}
+
+export function fetchInitialDone(payload) {
+  return {
+    type: FETCH_INITIAL_DONE,
+    payload,
   };
 }

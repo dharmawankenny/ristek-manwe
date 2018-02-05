@@ -34,23 +34,23 @@ export class Register extends React.Component { // eslint-disable-line react/pre
         cv: '',
         phone: '',
         line: '',
-        divisionOne: '',
+        sectionOne: '',
         reasonOne: '',
-        divisionTwo: '',
+        sectionTwo: '',
         reasonTwo: '',
       },
     };
   }
 
   validate = () => {
-    const { cv, phone, line, divisionOne, reasonOne, divisionTwo, reasonTwo } = this.props.register.input;
+    const { cv, phone, line, sectionOne, reasonOne, sectionTwo, reasonTwo } = this.props.register.input;
     const warnings = {
       cv: '',
       phone: '',
       line: '',
-      divisionOne: '',
+      sectionOne: '',
       reasonOne: '',
-      divisionTwo: '',
+      sectionTwo: '',
       reasonTwo: '',
     };
 
@@ -71,17 +71,17 @@ export class Register extends React.Component { // eslint-disable-line react/pre
       warnings.line = 'ID Line tidak boleh kosong';
     }
 
-    if (divisionOne.length === 0) {
+    if (sectionOne.length === 0) {
       valid = false;
-      warnings.divisionOne = 'Divisi pilihan 1 tidak boleh kosong';
+      warnings.sectionOne = 'Divisi pilihan 1 tidak boleh kosong';
     }
 
-    if (divisionOne.length > 0 && reasonOne.length === 0) {
+    if (sectionOne.length > 0 && reasonOne.length === 0) {
       valid = false;
       warnings.reasonOne = 'Alasan memilih divisi pilihan 1 tidak boleh kosong';
     }
 
-    if (divisionTwo.length > 0 && reasonTwo.length === 0) {
+    if (sectionTwo.length > 0 && reasonTwo.length === 0) {
       valid = false;
       warnings.reasonTwo = 'Alasan memilih divisi pilihan 2 tidak boleh kosong';
     }
@@ -99,7 +99,7 @@ export class Register extends React.Component { // eslint-disable-line react/pre
 
   render() {
     const { loading } = this.props.register;
-    const { cv, phone, line, divisionOne, reasonOne, divisionTwo, reasonTwo } = this.props.register.input;
+    const { cv, phone, line, sectionOne, reasonOne, sectionTwo, reasonTwo } = this.props.register.input;
     const { warnings } = this.state;
 
     return (
@@ -153,8 +153,8 @@ export class Register extends React.Component { // eslint-disable-line react/pre
           {warnings.line &&
             <h6 className="half">{warnings.line}</h6>}
           <select
-            value={divisionOne}
-            onChange={(evt) => this.props.dispatch(setInput('divisionOne', evt.target.value))}
+            value={sectionOne}
+            onChange={(evt) => this.props.dispatch(setInput('sectionOne', evt.target.value))}
             disabled={loading}
           >
             <option value="" selected disabled>Divisi Pilihan 1</option>
@@ -170,20 +170,20 @@ export class Register extends React.Component { // eslint-disable-line react/pre
             <option value="cys-cpr">SIG Competitive Programming</option>
             <option value="cys-esy">SIG Embedded System</option>
           </select>
-          {warnings.divisionOne &&
-            <h6>{warnings.divisionOne}</h6>}
+          {warnings.sectionOne &&
+            <h6>{warnings.sectionOne}</h6>}
           <textarea
             value={reasonOne}
             onChange={(evt) => this.props.dispatch(setInput('reasonOne', evt.target.value))}
             placeholder="Alasan memilih divisi tersebut menjadi pilihan 1"
-            disabled={!divisionOne || loading}
+            disabled={!sectionOne || loading}
           />
           {warnings.reasonOne &&
             <h6>{warnings.reasonOne}</h6>}
           <select
-            value={divisionTwo}
-            onChange={(evt) => this.props.dispatch(setInput('divisionTwo', evt.target.value))}
-            disabled={!divisionOne || loading}
+            value={sectionTwo}
+            onChange={(evt) => this.props.dispatch(setInput('sectionTwo', evt.target.value))}
+            disabled={!sectionOne || loading}
           >
             <option value="" selected disabled>Divisi Pilihan 2</option>
             <option value="hr">Human Resource</option>
@@ -198,13 +198,13 @@ export class Register extends React.Component { // eslint-disable-line react/pre
             <option value="cys-cpr">SIG Competitive Programming</option>
             <option value="cys-esy">SIG Embedded System</option>
           </select>
-          {warnings.divisionTwo &&
-            <h6>{warnings.divisionTwo}</h6>}
+          {warnings.sectionTwo &&
+            <h6>{warnings.sectionTwo}</h6>}
           <textarea
             value={reasonTwo}
             onChange={(evt) => this.props.dispatch(setInput('reasonTwo', evt.target.value))}
             placeholder="Alasan memilih divisi tersebut menjadi pilihan 2"
-            disabled={!divisionTwo || loading}
+            disabled={!sectionTwo || loading}
           />
           {warnings.reasonTwo &&
             <h6>{warnings.reasonTwo}</h6>}
