@@ -35,6 +35,26 @@ export class HomePage extends React.PureComponent {
   };
 
   componentDidMount() {
+    // old login way using buggy window.opener
+    // set this for local development becos fux same-origin policy why do they even bother implementing it on the bloody localhost anyway
+    // document.domain = 'localhost';
+    // document.domain = 'ristek.cs.ui.ac.id';
+
+    // window.processLogin = (user) => {
+    //   this.props.changeUserData(user);
+
+    //   // set cookies
+    //   const d = new Date();
+    //   d.setTime(d.getTime() + (60 * 60 * 1000));
+    //   const expires = `expires=${d.toUTCString()}`;
+    //   document.cookie = `user_oprec_ristek=${JSON.stringify(user)};expires=${expires};path=[ristek.cs.ui.ac.id/oprec/]`;
+    //   if (isEmpty(user.user_profile)) {
+    //     this.props.push('/oprec/daftar');
+    //   } else {
+    //     this.props.push('/oprec/dashboard');
+    //   }
+    // };
+
     if (
       !this.props.global.loading &&
       !this.props.global.success &&

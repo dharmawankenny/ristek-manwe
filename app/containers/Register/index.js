@@ -19,6 +19,8 @@ import Papa from 'images/paparistek.png';
 import Sitemap from 'common/routing';
 import { media } from 'common/theme';
 
+import { logout } from 'global-actions';
+
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { setInput, post } from './actions';
@@ -33,6 +35,7 @@ export class Register extends React.Component {
     push: func.isRequired,
     changeUserData: func.isRequired,
     fetchInitial: func.isRequired,
+    logout: func.isRequired,
   };
 
   constructor() {
@@ -172,7 +175,7 @@ export class Register extends React.Component {
             <Link className="yellow" to={Sitemap.encyclopedia}>
               Buka Ensiklopedia
             </Link>
-            <button>Logout</button>
+            <button onClick={this.props.logout}>Logout</button>
           </h1>
           <img className="desktop" src={Papa} alt="papa" />
         </Heading>
@@ -549,6 +552,7 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
+    logout: () => dispatch(logout()),
   };
 }
 

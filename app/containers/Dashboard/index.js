@@ -18,7 +18,7 @@ import { isEmpty } from 'lodash';
 import Papa from 'images/paparistek.png';
 
 import makeSelectGlobal from 'global-selectors';
-import { setUser } from 'global-actions';
+import { setUser, logout } from 'global-actions';
 import Sitemap from 'common/routing';
 import { media } from 'common/theme';
 
@@ -33,10 +33,11 @@ export class Dashboard extends React.Component {
     global: object.isRequired,
     setUser: func.isRequired,
     push: func.isRequired,
+    logout: func.isRequired,
   };
 
   componentDidMount() {
-    let userData = this.getCookie('user_oprec_compfest');
+    let userData = this.getCookie('user_oprec_ristek');
 
     if (userData !== '') {
       userData = JSON.parse(userData);
@@ -46,17 +47,17 @@ export class Dashboard extends React.Component {
       userData = this.props.global.user;
     }
 
-    if (!isEmpty(userData)) {
-      if (isEmpty(this.props.global.user)) {
-        this.props.setUser(user);
-      }
+    // if (!isEmpty(userData)) {
+    //   if (isEmpty(this.props.global.user)) {
+    //     this.props.setUser(userData);
+    //   }
 
-      if (isEmpty(userData.user_profile)) {
-        this.props.push('/oprec/daftar');
-      }
-    } else {
-      this.props.push('/oprec/');
-    }
+    //   if (isEmpty(userData.user_profile)) {
+    //     this.props.push('/oprec/daftar');
+    //   }
+    // } else {
+    //   this.props.push('/oprec/');
+    // }
   }
 
   getCookie(cname) {
@@ -90,7 +91,7 @@ export class Dashboard extends React.Component {
             <Link className="yellow" to={Sitemap.encyclopedia}>
               Buka Ensiklopedia
             </Link>
-            <button>Logout</button>
+            <button onClick={this.props.logout}>Logout</button>
           </h1>
           <img className="desktop" src={Papa} alt="papa" />
         </Heading>
@@ -349,6 +350,7 @@ function mapDispatchToProps(dispatch) {
     dispatch,
     setUser: (user) => dispatch(setUser(user)),
     push: (url) => dispatch(push(url)),
+    logout: () => dispatch(logout()),
   };
 }
 

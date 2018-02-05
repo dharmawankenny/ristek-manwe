@@ -85,9 +85,9 @@ export function* submitTask(action) {
     const d = new Date();
     d.setTime(d.getTime() + 60 * 60 * 1000);
     const expires = `expires=${d.toUTCString()}`;
-    document.cookie = `user_oprec_compfest=${JSON.stringify(
+    document.cookie = `user_oprec_ristek=${JSON.stringify(
       newUser
-    )};expires=${expires};path=[compfest.web.id/oprec/]`;
+    )};expires=${expires};path=[ristek.cs.ui.ac.id/oprec/]`;
     yield put(
       editFlashMessage(
         `Submission ${data.get('attachment').name} has been uploaded`
