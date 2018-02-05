@@ -150,6 +150,7 @@ export class Register extends React.Component {
     const {
       cv_link,
       phone,
+      email,
       line,
       sectionOne,
       reasonOne,
@@ -207,6 +208,16 @@ export class Register extends React.Component {
             disabled={loading}
           />
           {warnings.phone && <h6 className="half mobile">{warnings.phone}</h6>}
+          <input
+            type="email"
+            value={email}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('email', evt.target.value))
+            }
+            className="half"
+            placeholder="Email"
+            disabled={loading}
+          />
           <input
             type="text"
             value={line}

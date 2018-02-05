@@ -12,14 +12,15 @@ const initialState = fromJS({
   success: false,
   error: false,
   input: {
-    cv: '',
+    cv_link: '',
     phone: '',
     line: '',
+    email: '',
     sectionOne: '',
     reasonOne: '',
     sectionTwo: '',
-    reasonTwo: ''
-  }
+    reasonTwo: '',
+  },
 });
 
 function registerReducer(state = initialState, action) {
