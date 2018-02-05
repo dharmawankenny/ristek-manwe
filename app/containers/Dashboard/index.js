@@ -47,17 +47,17 @@ export class Dashboard extends React.Component {
       userData = this.props.global.user;
     }
 
-    // if (!isEmpty(userData)) {
-    //   if (isEmpty(this.props.global.user)) {
-    //     this.props.setUser(userData);
-    //   }
+    if (!isEmpty(userData)) {
+      if (isEmpty(this.props.global.user)) {
+        this.props.setUser(userData);
+      }
 
-    //   if (isEmpty(userData.user_profile)) {
-    //     this.props.push('/oprec/daftar');
-    //   }
-    // } else {
-    //   this.props.push('/oprec/');
-    // }
+      if (isEmpty(userData.user_profile)) {
+        this.props.push('/oprec/daftar');
+      }
+    } else {
+      this.props.push('/oprec/');
+    }
   }
 
   getCookie(cname) {
@@ -113,8 +113,12 @@ export class Dashboard extends React.Component {
             <h4>{task.description}}</h4>
             <h4>Lampiran: {task.description_link}</h4>
             <div className="inputWrapper">
-              <input type="text" placeholder="Masukkan link submission" />
-              <button>Submit Tugas</button>
+              <input
+                disabled
+                type="text"
+                placeholder="Masukkan link submission"
+              />
+              <button disabled>Submit Tugas</button>
             </div>
           </Task>
         ))}
@@ -124,8 +128,12 @@ export class Dashboard extends React.Component {
             <h4>{task.description}}</h4>
             <h4>Lampiran: {task.description_link}</h4>
             <div className="inputWrapper">
-              <input type="text" placeholder="Masukkan link submission" />
-              <button>Submit Tugas</button>
+              <input
+                disabled
+                type="text"
+                placeholder="Masukkan link submission"
+              />
+              <button disabled>Submit Tugas</button>
             </div>
           </Task>
         ))}

@@ -20,6 +20,7 @@ import Sitemap from 'common/routing';
 import { media } from 'common/theme';
 
 import { logout } from 'global-actions';
+import makeGlobalSelector from 'global-selectors';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
@@ -43,7 +44,7 @@ export class Register extends React.Component {
 
     this.state = {
       warnings: {
-        cv: '',
+        cv_link: '',
         phone: '',
         line: '',
         sectionOne: '',
@@ -82,7 +83,7 @@ export class Register extends React.Component {
 
   validate = () => {
     const {
-      cv,
+      cv_link,
       phone,
       line,
       sectionOne,
@@ -91,7 +92,7 @@ export class Register extends React.Component {
       reasonTwo,
     } = this.props.register.input;
     const warnings = {
-      cv: '',
+      cv_link: '',
       phone: '',
       line: '',
       sectionOne: '',
@@ -102,9 +103,9 @@ export class Register extends React.Component {
 
     let valid = true;
 
-    if (cv.length === 0 || !cv.startsWith('http')) {
+    if (cv_link.length === 0 || !cv_link.startsWith('http')) {
       valid = false;
-      warnings.cv =
+      warnings.cv_link =
         'Link CV tidak boleh kosong atau tidak valid (harus dimulai dengan http atau https)';
     }
 
@@ -147,7 +148,7 @@ export class Register extends React.Component {
   render() {
     const { loading } = this.props.register;
     const {
-      cv,
+      cv_link,
       phone,
       line,
       sectionOne,
@@ -180,21 +181,21 @@ export class Register extends React.Component {
           <img className="desktop" src={Papa} alt="papa" />
         </Heading>
         <Form>
-          <h1>Hai, {'Donald'}</h1>
+          <h1>Hai, {this.props.global.user.name}</h1>
           <h4>
             Isi form dibawah ini ya untuk mendaftar menjadi anggota Ristek
             Fasilkom UI 2018
           </h4>
           <input
             type="text"
-            value={cv}
+            value={cv_link}
             onChange={(evt) =>
-              this.props.dispatch(setInput('cv', evt.target.value))
+              this.props.dispatch(setInput('cv_link', evt.target.value))
             }
             placeholder="Link CV (Public Link GDrive/Dropbox)"
             disabled={loading}
           />
-          {warnings.cv && <h6>{warnings.cv}</h6>}
+          {warnings.cv_link && <h6>{warnings.cv_link}</h6>}
           <input
             type="tel"
             value={phone}
@@ -546,6 +547,7 @@ const Form = styled.div`
 `;
 
 const mapStateToProps = createStructuredSelector({
+  global: makeGlobalSelector(),
   register: makeSelectRegister(),
 });
 
