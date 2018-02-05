@@ -24,7 +24,8 @@ import makeSelectDashboard from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 
-export class Dashboard extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export class Dashboard extends React.Component {
+  // eslint-disable-line react/prefer-stateless-function
   render() {
     return (
       <Wrapper>
@@ -36,16 +37,23 @@ export class Dashboard extends React.Component { // eslint-disable-line react/pr
           <img className="mobile" src={Papa} alt="papa" />
           <h1>
             Dashboard Submisi<br />
-            <span>Anggota Ristek 2018</span><br />
-            <Link className="yellow" to={Sitemap.encyclopedia}>Buka Ensiklopedia</Link>
+            <span>Anggota Ristek 2018</span>
+            <br />
+            <Link className="yellow" to={Sitemap.encyclopedia}>
+              Buka Ensiklopedia
+            </Link>
             <button>Logout</button>
           </h1>
           <img className="desktop" src={Papa} alt="papa" />
         </Heading>
         <Task background="dark" color="white" accent="blue">
           <h1>Tugas Umum</h1>
-          <h4>Deskripsi: <a href="/">https://alalalala.com/</a></h4>
-          <h4>Submisi Sekarang: <a href="/">https://alalalala.com/</a></h4>
+          <h4>
+            Deskripsi: <a href="/">https://alalalala.com/</a>
+          </h4>
+          <h4>
+            Submisi Sekarang: <a href="/">https://alalalala.com/</a>
+          </h4>
           <div className="inputWrapper">
             <input type="file" />
             <button>Submit Tugas</button>
@@ -53,8 +61,12 @@ export class Dashboard extends React.Component { // eslint-disable-line react/pr
         </Task>
         <Task background="blue" color="white" accent="dark">
           <h1>Tugas Umum</h1>
-          <h4>Deskripsi: <a href="/">https://alalalala.com/</a></h4>
-          <h4>Submisi Sekarang: <a href="/">https://alalalala.com/</a></h4>
+          <h4>
+            Deskripsi: <a href="/">https://alalalala.com/</a>
+          </h4>
+          <h4>
+            Submisi Sekarang: <a href="/">https://alalalala.com/</a>
+          </h4>
           <div className="inputWrapper">
             <input type="file" />
             <button>Submit Tugas</button>
@@ -62,8 +74,12 @@ export class Dashboard extends React.Component { // eslint-disable-line react/pr
         </Task>
         <Task background="yellow" color="dark" accent="dark">
           <h1>Tugas Umum</h1>
-          <h4>Deskripsi: <a href="/">https://alalalala.com/</a></h4>
-          <h4>Submisi Sekarang: <a href="/">https://alalalala.com/</a></h4>
+          <h4>
+            Deskripsi: <a href="/">https://alalalala.com/</a>
+          </h4>
+          <h4>
+            Submisi Sekarang: <a href="/">https://alalalala.com/</a>
+          </h4>
           <div className="inputWrapper">
             <input type="file" />
             <button>Submit Tugas</button>
@@ -290,8 +306,4 @@ const withConnect = connect(mapStateToProps, mapDispatchToProps);
 const withReducer = injectReducer({ key: 'dashboard', reducer });
 const withSaga = injectSaga({ key: 'dashboard', saga });
 
-export default compose(
-  withReducer,
-  withSaga,
-  withConnect,
-)(Dashboard);
+export default compose(withReducer, withSaga, withConnect)(Dashboard);

@@ -31,9 +31,15 @@ function globalReducer(state = initialState, action) {
     case LOADING:
       return state.set('loading', true);
     case ERROR:
-      return state.set('loading', false).set('success', false).set('error', true);
+      return state
+        .set('loading', false)
+        .set('success', false)
+        .set('error', true);
     case SUCCESS:
-      return state.set('loading', false).set('error', false).set('success', true);
+      return state
+        .set('loading', false)
+        .set('error', false)
+        .set('success', true);
     case SET_USER:
       return state.set('user', action.payload.user);
     case SET_USER_PROFILE:

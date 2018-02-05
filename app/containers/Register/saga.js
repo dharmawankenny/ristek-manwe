@@ -3,25 +3,15 @@ import { LOCATION_CHANGE, push } from 'react-router-redux';
 import { take, call, select, cancel, fork, put } from 'redux-saga/effects';
 // import { isEmpty, isEqual } from 'lodash';
 import request from 'utils/request';
-import { globalSagas } from 'containers/App/sagas';
 
-import { FETCH_INITIAL, POST } from './constants';
+import { API_BASE, API_SECTIONS, API_USER_PROFILE } from 'global-constants';
 
-import {
-  API_BASE,
-  API_SECTIONS,
-  API_USER_PROFILE,
-} from 'containers/App/constants';
+import selectGlobal from 'global-selectors';
 
-import selectGlobal from 'containers/App/selectors';
+import { loading, loadingDone, loadingErr, setUser } from 'global-actions';
+
 import selectSignUpForm from './selectors';
-
-import {
-  loading,
-  loadingDone,
-  loadingErr,
-  changeUserProfile,
-} from 'containers/App/actions';
+import { FETCH_INITIAL, POST } from './constants';
 import { fetchInitialDone, changeInput } from './actions';
 
 export function* fetchSection(action) {
@@ -90,7 +80,7 @@ export function* postData() {
   if (!postCall.err) {
     const newUser = globalState.user;
     newUser.user_profile = postCall.data;
-    yield put(changeUserProfile(newUser));
+    yield put(setUserProfile(newUser));
 
     // set cookies
     const d = new Date();
@@ -113,7 +103,7 @@ export function* postDataSaga() {
 /**
  * Root saga manages watcher lifecycle
  */
-export function* signUpSaga() {
+export default function* signUpSaga() {
   // Fork watcher so we can continue execution
   const fetchSectionWatcher = yield fork(fetchSectionSaga);
   const postDataWatcher = yield fork(postDataSaga);
@@ -121,6 +111,3 @@ export function* signUpSaga() {
   yield cancel(fetchSectionWatcher);
   yield cancel(postDataWatcher);
 }
-
-// Bootstrap sagas
-export default [signUpSaga, globalSagas];

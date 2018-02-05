@@ -5,13 +5,14 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { func, any } from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { isEmpty } from 'lodash';
 
 import Papa from 'images/paparistek.png';
 
@@ -25,7 +26,15 @@ import makeSelectRegister from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 
-export class Register extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export class Register extends React.Component {
+  // eslint-disable-line react/prefer-stateless-function
+  static propTypes = {
+    global: any,
+    push: func.isRequired,
+    changeUserData: func.isRequired,
+    fetchInitial: func.isRequired,
+  };
+
   constructor() {
     super();
 
@@ -42,8 +51,42 @@ export class Register extends React.Component { // eslint-disable-line react/pre
     };
   }
 
+  componentDidMount() {
+    let userData = this.getCookie('user_oprec_ristek');
+
+    if (userData !== '') {
+      userData = JSON.parse(userData);
+    }
+
+    if (!isEmpty(this.props.global.user)) {
+      userData = this.props.global.user;
+    }
+
+    if (!isEmpty(userData)) {
+      if (isEmpty(this.props.global.user)) {
+        this.props.changeUserData(userData);
+      }
+
+      if (!isEmpty(userData.user_profile)) {
+        this.props.push('/oprec/dashboard');
+      } else {
+        this.props.fetchInitial(userData.token);
+      }
+    } else {
+      this.props.push('/oprec/');
+    }
+  }
+
   validate = () => {
-    const { cv, phone, line, sectionOne, reasonOne, sectionTwo, reasonTwo } = this.props.register.input;
+    const {
+      cv,
+      phone,
+      line,
+      sectionOne,
+      reasonOne,
+      sectionTwo,
+      reasonTwo,
+    } = this.props.register.input;
     const warnings = {
       cv: '',
       phone: '',
@@ -58,7 +101,8 @@ export class Register extends React.Component { // eslint-disable-line react/pre
 
     if (cv.length === 0 || !cv.startsWith('http')) {
       valid = false;
-      warnings.cv = 'Link CV tidak boleh kosong atau tidak valid (harus dimulai dengan http atau https)';
+      warnings.cv =
+        'Link CV tidak boleh kosong atau tidak valid (harus dimulai dengan http atau https)';
     }
 
     if (phone.length === 0) {
@@ -99,65 +143,88 @@ export class Register extends React.Component { // eslint-disable-line react/pre
 
   render() {
     const { loading } = this.props.register;
-    const { cv, phone, line, sectionOne, reasonOne, sectionTwo, reasonTwo } = this.props.register.input;
+    const {
+      cv,
+      phone,
+      line,
+      sectionOne,
+      reasonOne,
+      sectionTwo,
+      reasonTwo,
+    } = this.props.register.input;
     const { warnings } = this.state;
 
     return (
       <Wrapper>
         <Helmet>
           <title>Form Pendaftaran</title>
-          <meta name="description" content="Isi form ini dan daftar menjadi anggota Ristek Fasilkom UI 2018 sekarang juga!" />
+          <meta
+            name="description"
+            content="Isi form ini dan daftar menjadi anggota Ristek Fasilkom UI 2018 sekarang juga!"
+          />
         </Helmet>
         <Heading>
           <img className="mobile" src={Papa} alt="papa" />
           <h1>
             Form Pendaftaran<br />
-            <span>Anggota Ristek 2018</span><br />
-            <Link className="yellow" to={Sitemap.encyclopedia}>Buka Ensiklopedia</Link>
+            <span>Anggota Ristek 2018</span>
+            <br />
+            <Link className="yellow" to={Sitemap.encyclopedia}>
+              Buka Ensiklopedia
+            </Link>
             <button>Logout</button>
           </h1>
           <img className="desktop" src={Papa} alt="papa" />
         </Heading>
         <Form>
           <h1>Hai, {'Donald'}</h1>
-          <h4>Isi form dibawah ini ya untuk mendaftar menjadi anggota Ristek Fasilkom UI 2018</h4>
+          <h4>
+            Isi form dibawah ini ya untuk mendaftar menjadi anggota Ristek
+            Fasilkom UI 2018
+          </h4>
           <input
             type="text"
             value={cv}
-            onChange={(evt) => this.props.dispatch(setInput('cv', evt.target.value))}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('cv', evt.target.value))
+            }
             placeholder="Link CV (Public Link GDrive/Dropbox)"
             disabled={loading}
           />
-          {warnings.cv &&
-            <h6>{warnings.cv}</h6>}
+          {warnings.cv && <h6>{warnings.cv}</h6>}
           <input
             type="tel"
             value={phone}
-            onChange={(evt) => this.props.dispatch(setInput('phone', evt.target.value))}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('phone', evt.target.value))
+            }
             className="half"
             placeholder="Nomor Telepon"
             disabled={loading}
           />
-          {warnings.phone &&
-            <h6 className="half mobile">{warnings.phone}</h6>}
+          {warnings.phone && <h6 className="half mobile">{warnings.phone}</h6>}
           <input
             type="text"
             value={line}
-            onChange={(evt) => this.props.dispatch(setInput('line', evt.target.value))}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('line', evt.target.value))
+            }
             className="half"
             placeholder="ID Line"
             disabled={loading}
           />
-          {warnings.phone &&
-            <h6 className="half desktop">{warnings.phone}</h6>}
-          {warnings.line &&
-            <h6 className="half">{warnings.line}</h6>}
+          {warnings.phone && <h6 className="half desktop">{warnings.phone}</h6>}
+          {warnings.line && <h6 className="half">{warnings.line}</h6>}
           <select
             value={sectionOne}
-            onChange={(evt) => this.props.dispatch(setInput('sectionOne', evt.target.value))}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('sectionOne', evt.target.value))
+            }
             disabled={loading}
           >
-            <option value="" selected disabled>Divisi Pilihan 1</option>
+            <option value="" selected disabled>
+              Divisi Pilihan 1
+            </option>
             <option value="hr">Human Resource</option>
             <option value="pr">Public Relation</option>
             <option value="pm">Project Management</option>
@@ -165,27 +232,33 @@ export class Register extends React.Component { // eslint-disable-line react/pre
             <option value="dev-mob">SIG Mobile Development</option>
             <option value="dev-gam">SIG Game Development</option>
             <option value="dev-dpd">SIG Digital Product Development</option>
-            <option value="cys-net">SIG Network Security & Operating System</option>
+            <option value="cys-net">
+              SIG Network Security & Operating System
+            </option>
             <option value="cys-dsc">SIG Data Science</option>
             <option value="cys-cpr">SIG Competitive Programming</option>
             <option value="cys-esy">SIG Embedded System</option>
           </select>
-          {warnings.sectionOne &&
-            <h6>{warnings.sectionOne}</h6>}
+          {warnings.sectionOne && <h6>{warnings.sectionOne}</h6>}
           <textarea
             value={reasonOne}
-            onChange={(evt) => this.props.dispatch(setInput('reasonOne', evt.target.value))}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('reasonOne', evt.target.value))
+            }
             placeholder="Alasan memilih divisi tersebut menjadi pilihan 1"
             disabled={!sectionOne || loading}
           />
-          {warnings.reasonOne &&
-            <h6>{warnings.reasonOne}</h6>}
+          {warnings.reasonOne && <h6>{warnings.reasonOne}</h6>}
           <select
             value={sectionTwo}
-            onChange={(evt) => this.props.dispatch(setInput('sectionTwo', evt.target.value))}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('sectionTwo', evt.target.value))
+            }
             disabled={!sectionOne || loading}
           >
-            <option value="" selected disabled>Divisi Pilihan 2</option>
+            <option value="" selected disabled>
+              Divisi Pilihan 2
+            </option>
             <option value="hr">Human Resource</option>
             <option value="pr">Public Relation</option>
             <option value="pm">Project Management</option>
@@ -193,21 +266,23 @@ export class Register extends React.Component { // eslint-disable-line react/pre
             <option value="dev-mob">SIG Mobile Development</option>
             <option value="dev-gam">SIG Game Development</option>
             <option value="dev-dpd">SIG Digital Product Development</option>
-            <option value="cys-net">SIG Network Security & Operating System</option>
+            <option value="cys-net">
+              SIG Network Security & Operating System
+            </option>
             <option value="cys-dsc">SIG Data Science</option>
             <option value="cys-cpr">SIG Competitive Programming</option>
             <option value="cys-esy">SIG Embedded System</option>
           </select>
-          {warnings.sectionTwo &&
-            <h6>{warnings.sectionTwo}</h6>}
+          {warnings.sectionTwo && <h6>{warnings.sectionTwo}</h6>}
           <textarea
             value={reasonTwo}
-            onChange={(evt) => this.props.dispatch(setInput('reasonTwo', evt.target.value))}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('reasonTwo', evt.target.value))
+            }
             placeholder="Alasan memilih divisi tersebut menjadi pilihan 2"
             disabled={!sectionTwo || loading}
           />
-          {warnings.reasonTwo &&
-            <h6>{warnings.reasonTwo}</h6>}
+          {warnings.reasonTwo && <h6>{warnings.reasonTwo}</h6>}
           <button onClick={this.submit}>Daftar!</button>
         </Form>
       </Wrapper>
@@ -482,8 +557,4 @@ const withConnect = connect(mapStateToProps, mapDispatchToProps);
 const withReducer = injectReducer({ key: 'register', reducer });
 const withSaga = injectSaga({ key: 'register', saga });
 
-export default compose(
-  withReducer,
-  withSaga,
-  withConnect,
-)(Register);
+export default compose(withReducer, withSaga, withConnect)(Register);

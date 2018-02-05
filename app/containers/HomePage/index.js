@@ -10,27 +10,116 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { func, object } from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { isEmpty } from 'lodash';
 
-import { getServerTime } from 'global-actions';
+import { getServerTime, setUser } from 'global-actions';
 import makeSelectGlobal from 'global-selectors';
 
 import LandingMan from 'images/landing-man.png';
 
 import Sitemap from 'common/routing';
 import { media } from 'common/theme';
+import { SSO_DOMAIN, SSO_URL } from 'global-constants';
 
 export class HomePage extends React.PureComponent {
+  static propTypes = {
+    push: func.isRequired,
+    setUser: func.isRequired,
+    global: object.isRequired,
+  };
+
   componentDidMount() {
-    if (!this.props.global.loading && !this.props.global.success && !this.props.global.serverTime) {
+    if (
+      !this.props.global.loading &&
+      !this.props.global.success &&
+      !this.props.global.serverTime
+    ) {
       this.props.dispatch(getServerTime());
     }
+
+    window.addEventListener('message', this.receiveLoginData, false);
+
+    const userData = this.getCookie('user_oprec_ristek');
+
+    if (userData !== '') {
+      this.props.setUser(JSON.parse(userData));
+    }
   }
+
+  getCookie(cname) {
+    const name = `${cname}=`;
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i += 1) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return '';
+  }
+
+  /**
+   *  Catch login data from message sent by CP ORION via postMessage function
+   *  Caught by setting an event listener to 'message' event
+   */
+  receiveLoginData = (event) => {
+    // For Chrome, the origin property is in the event.originalEvent object.
+    const origin = event.origin || event.originalEvent.origin;
+    const user = event.data;
+
+    // MAKE SURE FUNCTION CALLER ORIGIN IS FROM CP ORION DOMAIN! SECURITY PURPOSES.
+    if (origin === SSO_DOMAIN) {
+      this.props.setUser(user);
+
+      // set cookies
+      const d = new Date();
+      d.setTime(d.getTime() + 60 * 60 * 1000);
+      const expires = `expires=${d.toUTCString()}`;
+      document.cookie = `user_oprec_ristek=${JSON.stringify(
+        event.data
+      )};expires=${expires};path=[ristek.cs.ui.ac.id/oprec/]`;
+
+      // redirect after login success
+      if (isEmpty(user.user_profile)) {
+        this.props.push('/oprec/daftar');
+      } else {
+        this.props.push('/oprec/dashboard');
+      }
+    }
+  };
+
+  login = () => {
+    if (isEmpty(this.props.global.user)) {
+      // save window for login to variable so we can call postMessage to it
+      const loginWindow = window.open(
+        SSO_URL,
+        '_blank',
+        'width=600,height=600'
+      );
+
+      // send message to the window constantly until window closes
+      const orionMessageInterval = setInterval(() => {
+        // stop interval when login window has closed
+        if (loginWindow.closed) {
+          clearInterval(orionMessageInterval);
+        }
+
+        // postMessage to the window, the message is not important whatsoever,
+        // what important is that CP ORION get CP OMEGA origin window
+        // so CP ORION can send message back to CP OMEGA
+        loginWindow.postMessage('iliketrains', SSO_URL);
+      }, 1000);
+    }
+  };
 
   render() {
     return (
@@ -38,8 +127,13 @@ export class HomePage extends React.PureComponent {
         <img src={LandingMan} alt="The Man" />
         <Info>
           <h4>Telah Dibuka!</h4>
-          <h1>Open Recruitment<br /><span>Anggota Ristek 2018</span></h1>
-          <button className="yellow">Login SSO</button>
+          <h1>
+            Open Recruitment<br />
+            <span>Anggota Ristek 2018</span>
+          </h1>
+          <button className="yellow" onClick={this.login}>
+            Login SSO
+          </button>
           <Link to={Sitemap.encyclopedia}>Ensiklopedia</Link>
         </Info>
       </Landing>
@@ -168,7 +262,6 @@ const Info = styled.div`
     }
   }
 
-
   a {
     margin: 0;
   }
@@ -181,11 +274,10 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
+    setUser: (user) => dispatch(setUser(user)),
   };
 }
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
-export default compose(
-  withConnect,
-)(HomePage);
+export default compose(withConnect)(HomePage);

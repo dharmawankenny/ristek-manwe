@@ -9,6 +9,10 @@ import {
   GET_SERVER_TIME_SUCCESS,
   INCREMENT_TIME,
   FLASH_MESSAGE,
+  LOADING_DONE,
+  LOADING_ERR,
+  LOAD_SERVER_TIME,
+  LOAD_SERVER_TIME_SUCCESS,
 } from './global-constants';
 
 export function setUser(user) {
@@ -72,5 +76,41 @@ export function flash(message) {
   return {
     type: FLASH_MESSAGE,
     payload: { message },
+  };
+}
+
+export function loadingDone() {
+  return {
+    type: LOADING_DONE,
+  };
+}
+
+export function loadingErr() {
+  return {
+    type: LOADING_ERR,
+  };
+}
+
+export function editFlashMessage(message) {
+  return {
+    type: FLASH_MESSAGE,
+    payload: {
+      message,
+    },
+  };
+}
+
+export function loadServerTime() {
+  return {
+    type: LOAD_SERVER_TIME,
+  };
+}
+
+export function loadServerTimeSuccess(serverTime) {
+  return {
+    type: LOAD_SERVER_TIME_SUCCESS,
+    payload: {
+      serverTime,
+    },
   };
 }

@@ -3,27 +3,26 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 import { take, call, select, cancel, fork, put } from 'redux-saga/effects';
 // import { isEmpty, isEqual } from 'lodash';
 import request from 'utils/request';
-import { globalSagas } from 'containers/App/sagas';
-
-import { SUBMIT_TASK } from './constants';
 
 import {
   API_BASE,
   // API_SECTIONS,
   API_SUBMISSIONS,
   // API_USER_PROFILE,
-} from 'containers/App/constants';
+} from 'global-constants';
 
-import selectGlobal from 'containers/App/selectors';
+import selectGlobal from 'global-selectors';
 // import selectDashboard from './selectors';
 
 import {
   loading,
   loadingDone,
   loadingErr,
-  changeUserProfile,
+  setUserProfile,
   editFlashMessage,
-} from 'containers/App/actions';
+} from 'global-actions';
+
+import { SUBMIT_TASK } from './constants';
 
 export function* submitTask(action) {
   yield put(loading());
@@ -80,7 +79,7 @@ export function* submitTask(action) {
   if (!submitCall.err) {
     const newUser = globalState.user;
     newUser.user_profile.submissions.push(submitCall.data);
-    yield put(changeUserProfile(newUser));
+    yield put(setUserProfile(newUser));
 
     // set cookies
     const d = new Date();
@@ -114,12 +113,9 @@ export function* submitTaskSaga() {
 /**
  * Root saga manages watcher lifecycle
  */
-export function* dashboardSaga() {
+export default function* dashboardSaga() {
   // Fork watcher so we can continue execution
   const submitTaskWatcher = yield fork(submitTaskSaga);
   yield take(LOCATION_CHANGE);
   yield cancel(submitTaskWatcher);
 }
-
-// Bootstrap sagas
-export default [dashboardSaga, globalSagas];
