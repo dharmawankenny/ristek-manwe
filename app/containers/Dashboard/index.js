@@ -5,16 +5,20 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { object, func } from 'prop-types';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { isEmpty } from 'lodash';
 
 import Papa from 'images/paparistek.png';
 
+import makeSelectGlobal from 'global-selectors';
+import { setUser } from 'global-actions';
 import Sitemap from 'common/routing';
 import { media } from 'common/theme';
 
@@ -25,7 +29,51 @@ import reducer from './reducer';
 import saga from './saga';
 
 export class Dashboard extends React.Component {
-  // eslint-disable-line react/prefer-stateless-function
+  static propTypes = {
+    global: object.isRequired,
+    setUser: func.isRequired,
+    push: func.isRequired,
+  };
+
+  componentDidMount() {
+    let userData = this.getCookie('user_oprec_compfest');
+
+    if (userData !== '') {
+      userData = JSON.parse(userData);
+    }
+
+    if (!isEmpty(this.props.global.user)) {
+      userData = this.props.global.user;
+    }
+
+    if (!isEmpty(userData)) {
+      if (isEmpty(this.props.global.user)) {
+        this.props.setUser(user);
+      }
+
+      if (isEmpty(userData.user_profile)) {
+        this.props.push('/oprec/daftar');
+      }
+    } else {
+      this.props.push('/oprec/');
+    }
+  }
+
+  getCookie(cname) {
+    const name = `${cname}=`;
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i += 1) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return '';
+  }
+
   render() {
     return (
       <Wrapper>
@@ -292,12 +340,15 @@ const Task = styled.div`
 `;
 
 const mapStateToProps = createStructuredSelector({
+  global: makeSelectGlobal(),
   dashboard: makeSelectDashboard(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
+    setUser: (user) => dispatch(setUser(user)),
+    push: (url) => dispatch(push(url)),
   };
 }
 
