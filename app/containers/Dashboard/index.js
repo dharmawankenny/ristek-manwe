@@ -13,7 +13,7 @@ import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 
 import Papa from 'images/paparistek.png';
 
@@ -76,6 +76,18 @@ export class Dashboard extends React.Component {
   }
 
   render() {
+    const { global } = this.props;
+    const firstDivisionTasks = get(
+      global,
+      'user.user_profile.first_section.task',
+      []
+    );
+    const secondDivisionTasks = get(
+      global,
+      'user.user_profile.second_section.task',
+      []
+    );
+
     return (
       <Wrapper>
         <Helmet>
@@ -95,45 +107,28 @@ export class Dashboard extends React.Component {
           </h1>
           <img className="desktop" src={Papa} alt="papa" />
         </Heading>
-        <Task background="dark" color="white" accent="blue">
-          <h1>Tugas Umum</h1>
-          <h4>
-            Deskripsi: <a href="/">https://alalalala.com/</a>
-          </h4>
-          <h4>
-            Submisi Sekarang: <a href="/">https://alalalala.com/</a>
-          </h4>
-          <div className="inputWrapper">
-            <input type="file" />
-            <button>Submit Tugas</button>
-          </div>
-        </Task>
-        <Task background="blue" color="white" accent="dark">
-          <h1>Tugas Umum</h1>
-          <h4>
-            Deskripsi: <a href="/">https://alalalala.com/</a>
-          </h4>
-          <h4>
-            Submisi Sekarang: <a href="/">https://alalalala.com/</a>
-          </h4>
-          <div className="inputWrapper">
-            <input type="file" />
-            <button>Submit Tugas</button>
-          </div>
-        </Task>
-        <Task background="yellow" color="dark" accent="dark">
-          <h1>Tugas Umum</h1>
-          <h4>
-            Deskripsi: <a href="/">https://alalalala.com/</a>
-          </h4>
-          <h4>
-            Submisi Sekarang: <a href="/">https://alalalala.com/</a>
-          </h4>
-          <div className="inputWrapper">
-            <input type="file" />
-            <button>Submit Tugas</button>
-          </div>
-        </Task>
+        {firstDivisionTasks.map((task) => (
+          <Task key={task.id} background="blue" color="white" accent="dark">
+            <h1>{task.name}</h1>
+            <h4>{task.description}}</h4>
+            <h4>Lampiran: {task.description_link}</h4>
+            <div className="inputWrapper">
+              <input type="text" placeholder="Masukkan link submission" />
+              <button>Submit Tugas</button>
+            </div>
+          </Task>
+        ))}
+        {secondDivisionTasks.map((task) => (
+          <Task key={task.id} background="yellow" color="dark" accent="dark">
+            <h1>{task.name}</h1>
+            <h4>{task.description}}</h4>
+            <h4>Lampiran: {task.description_link}</h4>
+            <div className="inputWrapper">
+              <input type="text" placeholder="Masukkan link submission" />
+              <button>Submit Tugas</button>
+            </div>
+          </Task>
+        ))}
       </Wrapper>
     );
   }
