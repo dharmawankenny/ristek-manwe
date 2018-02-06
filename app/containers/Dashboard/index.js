@@ -18,7 +18,7 @@ import { isEmpty, get } from 'lodash';
 import Papa from 'images/paparistek.png';
 
 import makeSelectGlobal from 'global-selectors';
-import { setUser, logout } from 'global-actions';
+import { setUser } from 'global-actions';
 import Sitemap from 'common/routing';
 import { media } from 'common/theme';
 
@@ -34,7 +34,6 @@ export class Dashboard extends React.Component {
     global: object.isRequired,
     setUser: func.isRequired,
     push: func.isRequired,
-    logout: func.isRequired,
     submitTask: func.isRequired,
   };
 
@@ -43,7 +42,7 @@ export class Dashboard extends React.Component {
   };
 
   componentDidMount() {
-    let userData = this.getCookie('user_oprec_ristek');
+    let userData = window.localStorage.getItem('user_oprec_ristek');
 
     if (userData !== '') {
       userData = JSON.parse(userData);
@@ -59,26 +58,11 @@ export class Dashboard extends React.Component {
       }
 
       if (isEmpty(userData.user_profile)) {
-        this.props.push('/oprec/daftar');
+        this.props.push('/oprec/register');
       }
     } else {
       this.props.push('/oprec/');
     }
-  }
-
-  getCookie(cname) {
-    const name = `${cname}=`;
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i += 1) {
-      let c = ca[i];
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return '';
   }
 
   handleTaskInputChange = (taskId) => (e) => {
@@ -125,56 +109,86 @@ export class Dashboard extends React.Component {
             <Link className="yellow" to={Sitemap.encyclopedia}>
               Buka Ensiklopedia
             </Link>
-            <button onClick={this.props.logout}>Logout</button>
+            <Link to={Sitemap.logout}>Logout</Link>
           </h1>
           <img className="desktop" src={Papa} alt="papa" />
         </Heading>
-        {firstDivisionTasks.map((task) => (
-          <Task key={task.id} background="blue" color="white" accent="dark">
-            <h1>{task.name}</h1>
-            <h4 dangerouslySetInnerHtml={{ __html: task.description }} />
-            <h4>Lampiran: {task.description_link}</h4>
-            <div className="inputWrapper">
-              <input
-                type="text"
-                placeholder="Masukkan link submission"
-                value={get(this.state.taskInput, task.id, '')}
-                onChange={this.handleTaskInputChange(task.id)}
-              />
-              <button
-                onClick={this.handleTaskSubmit(
-                  global.user.user_profile.first_section.id,
-                  task.id
-                )}
-              >
-                Submit Tugas
-              </button>
-            </div>
-          </Task>
-        ))}
-        {secondDivisionTasks.map((task) => (
-          <Task key={task.id} background="yellow" color="dark" accent="dark">
-            <h1>{task.name}</h1>
-            <h4 dangerouslySetInnerHtml={{ __html: task.description }} />
-            <h4>Lampiran: {task.description_link}</h4>
-            <div className="inputWrapper">
-              <input
-                type="text"
-                placeholder="Masukkan link submission"
-                value={get(this.state.taskInput, task.id, '')}
-                onChange={this.handleTaskInputChange(task.id)}
-              />
-              <button
-                onClick={this.handleTaskSubmit(
-                  global.user.user_profile.second_section.id,
-                  task.id
-                )}
-              >
-                Submit Tugas
-              </button>
-            </div>
-          </Task>
-        ))}
+        {firstDivisionTasks.map((task) => {
+          let newestSubmissionFlag = 0;
+          let firstSectionSubmission = '-';
+
+          this.props.global.user.user_profile.submissions.map((valueSubmission) => {
+            if (valueSubmission.section === this.props.global.user.user_profile.first_section.id) {
+              if (valueSubmission.id > newestSubmissionFlag) {
+                newestSubmissionFlag = valueSubmission.id;
+                firstSectionSubmission = valueSubmission.file_link;
+              }
+            }
+            return '';
+          });
+
+          return (
+            <Task key={task.id} background="blue" color="white" accent="dark">
+              <h1>{task.name}</h1>
+              <h4>Lampiran: <a href={task.detail_link} target="_blank">{task.description_link}</a></h4>
+              <h4>Submisi Saat Ini: <a href={firstSectionSubmission} target="_blank">{firstSectionSubmission}</a></h4>
+              <div className="inputWrapper">
+                <input
+                  type="text"
+                  placeholder="Masukkan link submission"
+                  value={get(this.state.taskInput, task.id, '')}
+                  onChange={this.handleTaskInputChange(task.id)}
+                />
+                <button
+                  onClick={this.handleTaskSubmit(
+                    global.user.user_profile.first_section.id,
+                    task.id
+                  )}
+                >
+                  Submit Tugas
+                </button>
+              </div>
+            </Task>
+          );
+        })}
+        {secondDivisionTasks.map((task) => {
+          let newestSubmissionFlag = 0;
+          let secondSectionSubmission = '-';
+
+          this.props.global.user.user_profile.submissions.map((valueSubmission) => {
+            if (valueSubmission.section === this.props.global.user.user_profile.second_section.id) {
+              if (valueSubmission.id > newestSubmissionFlag) {
+                newestSubmissionFlag = valueSubmission.id;
+                secondSectionSubmission = valueSubmission.file_link;
+              }
+            }
+            return '';
+          });
+
+          return (
+            <Task key={task.id} background="yellow" color="dark" accent="dark">
+              <h1>{task.name}</h1>
+              <h4>Lampiran: {task.detail_link}</h4>
+              <h4>Submisi Saat Ini: <a href={secondSectionSubmission} target="_blank">{secondSectionSubmission}</a></h4>
+              <div className="inputWrapper">
+                <input
+                  type="text"
+                  placeholder="Masukkan link submission"
+                  value={get(this.state.taskInput, task.id, '')}
+                  onChange={this.handleTaskInputChange(task.id)}
+                />
+                <button
+                  onClick={this.handleTaskSubmit(
+                    global.user.user_profile.second_section.id,
+                    task.id
+                  )}
+                >
+                  Submit Tugas
+                </button>
+              </div>
+            </Task>
+          );
+        })}
       </Wrapper>
     );
   }
@@ -391,7 +405,6 @@ function mapDispatchToProps(dispatch) {
     dispatch,
     setUser: (user) => dispatch(setUser(user)),
     push: (url) => dispatch(push(url)),
-    logout: () => dispatch(logout()),
     submitTask: (target) => dispatch(submitTask(target)),
   };
 }

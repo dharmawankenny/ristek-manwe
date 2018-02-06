@@ -8,11 +8,11 @@ import { API_BASE, API_SECTIONS, API_USER_PROFILE } from 'global-constants';
 
 import selectGlobal from 'global-selectors';
 
-import { loading, loadingDone, loadingErr, setUser } from 'global-actions';
+import { setUser } from 'global-actions';
 
 import selectSignUpForm from './selectors';
 import { FETCH_INITIAL, POST } from './constants';
-import { fetchInitialDone, changeInput } from './actions';
+import { fetchInitialDone, loading } from './actions';
 
 export function* fetchSection(action) {
   yield put(loading());
@@ -26,6 +26,8 @@ export function* fetchSection(action) {
   const requestURL = `${API_BASE}${API_SECTIONS}`;
   const auth = `JWT ${token}`;
 
+  console.log('harambe');
+
   const fetchSectionCall = yield call(request, requestURL, {
     method: 'GET',
     headers: {
@@ -37,9 +39,6 @@ export function* fetchSection(action) {
 
   if (!fetchSectionCall.err) {
     yield put(fetchInitialDone(fetchSectionCall.data));
-    yield put(loadingDone());
-  } else {
-    yield put(loadingErr());
   }
 }
 
@@ -59,10 +58,20 @@ export function* postData() {
       username: globalState.user.username,
     },
     name: globalState.user.name,
+    cv_link: localState.input.cv_link,
     email: localState.input.email,
     phone_number: localState.input.phone,
     line: localState.input.line,
+    first_section: {
+      id: localState.input.first_section,
+    },
+    first_section_reason: localState.input.first_section_reason,
   };
+
+  if (localState.input.second_section > 0) {
+    requestBody.second_section = { id: localState.input.second_section };
+    requestBody.second_section_reason = localState.input.second_section_reason;
+  }
 
   const requestURL = `${API_BASE}${API_USER_PROFILE}`;
   const auth = `JWT ${token}`;
@@ -80,7 +89,7 @@ export function* postData() {
   if (!postCall.err) {
     const newUser = globalState.user;
     newUser.user_profile = postCall.data;
-    yield put(setUserProfile(newUser));
+    yield put(setUser(newUser));
 
     // set cookies
     const d = new Date();
@@ -89,10 +98,7 @@ export function* postData() {
     document.cookie = `user_oprec_ristek=${JSON.stringify(
       newUser
     )};expires=${expires};path=[ristek.cs.ui.ac.id/oprec]`;
-    yield put(loadingDone());
     yield put(push('/oprec/dashboard'));
-  } else {
-    yield put(loadingErr());
   }
 }
 

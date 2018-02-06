@@ -19,12 +19,12 @@ import Papa from 'images/paparistek.png';
 import Sitemap from 'common/routing';
 import { media } from 'common/theme';
 
-import { logout } from 'global-actions';
+import { setUser } from 'global-actions';
 import makeGlobalSelector from 'global-selectors';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import { setInput, post } from './actions';
+import { setInput, post, fetchInitial } from './actions';
 import makeSelectRegister from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -34,9 +34,8 @@ export class Register extends React.Component {
   static propTypes = {
     global: any,
     push: func.isRequired,
-    changeUserData: func.isRequired,
     fetchInitial: func.isRequired,
-    logout: func.isRequired,
+    setUser: func.isRequired,
   };
 
   constructor() {
@@ -45,18 +44,19 @@ export class Register extends React.Component {
     this.state = {
       warnings: {
         cv_link: '',
+        email: '',
         phone: '',
         line: '',
-        sectionOne: '',
-        reasonOne: '',
-        sectionTwo: '',
-        reasonTwo: '',
+        first_section: '',
+        first_section_reason: '',
+        second_section: '',
+        second_section_reason: '',
       },
     };
   }
 
   componentDidMount() {
-    let userData = this.getCookie('user_oprec_ristek');
+    let userData = window.localStorage.getItem('user_oprec_ristek');
 
     if (userData !== '') {
       userData = JSON.parse(userData);
@@ -68,7 +68,7 @@ export class Register extends React.Component {
 
     if (!isEmpty(userData)) {
       if (isEmpty(this.props.global.user)) {
-        this.props.changeUserData(userData);
+        this.props.setUser(userData);
       }
 
       if (!isEmpty(userData.user_profile)) {
@@ -84,21 +84,24 @@ export class Register extends React.Component {
   validate = () => {
     const {
       cv_link,
+      email,
       phone,
       line,
-      sectionOne,
-      reasonOne,
-      sectionTwo,
-      reasonTwo,
+      first_section,
+      first_section_reason,
+      second_section,
+      second_section_reason,
     } = this.props.register.input;
+
     const warnings = {
       cv_link: '',
+      email: '',
       phone: '',
       line: '',
-      sectionOne: '',
-      reasonOne: '',
-      sectionTwo: '',
-      reasonTwo: '',
+      first_section: '',
+      first_section_reason: '',
+      second_section: '',
+      second_section_reason: '',
     };
 
     let valid = true;
@@ -107,6 +110,13 @@ export class Register extends React.Component {
       valid = false;
       warnings.cv_link =
         'Link CV tidak boleh kosong atau tidak valid (harus dimulai dengan http atau https)';
+    }
+
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (email.length === 0 || !emailRegex.test(email)) {
+      valid = false;
+      warnings.email = 'Email kosong atau tidak valid';
     }
 
     if (phone.length === 0) {
@@ -119,19 +129,25 @@ export class Register extends React.Component {
       warnings.line = 'ID Line tidak boleh kosong';
     }
 
-    if (sectionOne.length === 0) {
+    if (first_section <= 0) {
       valid = false;
-      warnings.sectionOne = 'Divisi pilihan 1 tidak boleh kosong';
+      warnings.first_section = 'Divisi pilihan 1 tidak boleh kosong';
     }
 
-    if (sectionOne.length > 0 && reasonOne.length === 0) {
+    if (first_section > 0 && first_section_reason.length === 0) {
       valid = false;
-      warnings.reasonOne = 'Alasan memilih divisi pilihan 1 tidak boleh kosong';
+      warnings.first_section_reason = 'Alasan memilih divisi pilihan 1 tidak boleh kosong';
     }
 
-    if (sectionTwo.length > 0 && reasonTwo.length === 0) {
+    if (second_section > 0 && second_section_reason.length === 0) {
       valid = false;
-      warnings.reasonTwo = 'Alasan memilih divisi pilihan 2 tidak boleh kosong';
+      warnings.second_section_reason = 'Alasan memilih divisi pilihan 2 tidak boleh kosong';
+    }
+
+    if (first_section === second_section) {
+      valid = false;
+      warnings.first_section = 'Divisi pilihan 1 dan 2 tidak boleh sama';
+      warnings.second_section = 'Divisi pilihan 1 dan 2 tidak boleh sama';
     }
 
     this.setState({ warnings });
@@ -149,13 +165,13 @@ export class Register extends React.Component {
     const { loading } = this.props.register;
     const {
       cv_link,
-      phone,
       email,
+      phone,
       line,
-      sectionOne,
-      reasonOne,
-      sectionTwo,
-      reasonTwo,
+      first_section,
+      first_section_reason,
+      second_section,
+      second_section_reason,
     } = this.props.register.input;
     const { warnings } = this.state;
 
@@ -177,7 +193,7 @@ export class Register extends React.Component {
             <Link className="yellow" to={Sitemap.encyclopedia}>
               Buka Ensiklopedia
             </Link>
-            <button onClick={this.props.logout}>Logout</button>
+            <Link to={Sitemap.logout}>Logout</Link>
           </h1>
           <img className="desktop" src={Papa} alt="papa" />
         </Heading>
@@ -198,6 +214,16 @@ export class Register extends React.Component {
           />
           {warnings.cv_link && <h6>{warnings.cv_link}</h6>}
           <input
+            type="email"
+            value={email}
+            onChange={(evt) =>
+              this.props.dispatch(setInput('email', evt.target.value))
+            }
+            placeholder="Email"
+            disabled={loading}
+          />
+          {warnings.email && <h6>{warnings.email}</h6>}
+          <input
             type="tel"
             value={phone}
             onChange={(evt) =>
@@ -208,16 +234,6 @@ export class Register extends React.Component {
             disabled={loading}
           />
           {warnings.phone && <h6 className="half mobile">{warnings.phone}</h6>}
-          <input
-            type="email"
-            value={email}
-            onChange={(evt) =>
-              this.props.dispatch(setInput('email', evt.target.value))
-            }
-            className="half"
-            placeholder="Email"
-            disabled={loading}
-          />
           <input
             type="text"
             value={line}
@@ -231,73 +247,53 @@ export class Register extends React.Component {
           {warnings.phone && <h6 className="half desktop">{warnings.phone}</h6>}
           {warnings.line && <h6 className="half">{warnings.line}</h6>}
           <select
-            value={sectionOne}
+            value={first_section}
             onChange={(evt) =>
-              this.props.dispatch(setInput('sectionOne', evt.target.value))
+              this.props.dispatch(setInput('first_section', evt.target.value))
             }
             disabled={loading}
           >
-            <option value="" selected disabled>
+            <option value={-1} selected disabled>
               Divisi Pilihan 1
             </option>
-            <option value="hr">Human Resource</option>
-            <option value="pr">Public Relation</option>
-            <option value="pm">Project Management</option>
-            <option value="dev-web">SIG Web Development</option>
-            <option value="dev-mob">SIG Mobile Development</option>
-            <option value="dev-gam">SIG Game Development</option>
-            <option value="dev-dpd">SIG Digital Product Development</option>
-            <option value="cys-net">
-              SIG Network Security & Operating System
-            </option>
-            <option value="cys-dsc">SIG Data Science</option>
-            <option value="cys-cpr">SIG Competitive Programming</option>
-            <option value="cys-esy">SIG Embedded System</option>
+            {this.props.register.sections.map((section) =>
+              <option value={section.id}>{section.name}</option>
+            )}
           </select>
-          {warnings.sectionOne && <h6>{warnings.sectionOne}</h6>}
+          {warnings.first_section && <h6>{warnings.first_section}</h6>}
           <textarea
-            value={reasonOne}
+            value={first_section_reason}
             onChange={(evt) =>
-              this.props.dispatch(setInput('reasonOne', evt.target.value))
+              this.props.dispatch(setInput('first_section_reason', evt.target.value))
             }
             placeholder="Alasan memilih divisi tersebut menjadi pilihan 1"
-            disabled={!sectionOne || loading}
+            disabled={first_section <= 0 || loading}
           />
-          {warnings.reasonOne && <h6>{warnings.reasonOne}</h6>}
+          {warnings.first_section_reason && <h6>{warnings.first_section_reason}</h6>}
           <select
-            value={sectionTwo}
+            value={second_section}
             onChange={(evt) =>
-              this.props.dispatch(setInput('sectionTwo', evt.target.value))
+              this.props.dispatch(setInput('second_section', evt.target.value))
             }
-            disabled={!sectionOne || loading}
+            disabled={first_section <= 0 || loading}
           >
-            <option value="" selected disabled>
+            <option value={-1} selected disabled>
               Divisi Pilihan 2
             </option>
-            <option value="hr">Human Resource</option>
-            <option value="pr">Public Relation</option>
-            <option value="pm">Project Management</option>
-            <option value="dev-web">SIG Web Development</option>
-            <option value="dev-mob">SIG Mobile Development</option>
-            <option value="dev-gam">SIG Game Development</option>
-            <option value="dev-dpd">SIG Digital Product Development</option>
-            <option value="cys-net">
-              SIG Network Security & Operating System
-            </option>
-            <option value="cys-dsc">SIG Data Science</option>
-            <option value="cys-cpr">SIG Competitive Programming</option>
-            <option value="cys-esy">SIG Embedded System</option>
+            {this.props.register.sections.map((section) =>
+              <option value={section.id}>{section.name}</option>
+            )}
           </select>
-          {warnings.sectionTwo && <h6>{warnings.sectionTwo}</h6>}
+          {warnings.second_section && <h6>{warnings.second_section}</h6>}
           <textarea
-            value={reasonTwo}
+            value={second_section_reason}
             onChange={(evt) =>
-              this.props.dispatch(setInput('reasonTwo', evt.target.value))
+              this.props.dispatch(setInput('second_section_reason', evt.target.value))
             }
             placeholder="Alasan memilih divisi tersebut menjadi pilihan 2"
-            disabled={!sectionTwo || loading}
+            disabled={second_section <= 0 || loading}
           />
-          {warnings.reasonTwo && <h6>{warnings.reasonTwo}</h6>}
+          {warnings.second_section_reason && <h6>{warnings.second_section_reason}</h6>}
           <button onClick={this.submit}>Daftar!</button>
         </Form>
       </Wrapper>
@@ -565,7 +561,8 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     dispatch,
-    logout: () => dispatch(logout()),
+    fetchInitial: (token) => dispatch(fetchInitial(token)),
+    setUser: (user) => dispatch(setUser(user)),
   };
 }
 

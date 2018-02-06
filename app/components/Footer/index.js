@@ -7,12 +7,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Logo from 'images/footer-logo.png';
-import Barcode from 'images/footer-barcode.png';
-
 import { media } from 'common/theme';
 
-function Footer() {
+function Footer(props) {
   return (
     <Foot>
       <div className="borders blue" />
@@ -20,7 +17,7 @@ function Footer() {
       <div className="borders yellow" />
       <div className="wrapper">
         <LogoSet>
-          <img src={Logo} alt="Logo" />
+          <img src={props.logo} alt="Logo" />
           <div className="logoText">
             <h2><span className="blue">Riset</span> & <span className="yellow">Teknologi</span></h2>
             <h3>Fasilkom UI 2018</h3>
@@ -33,7 +30,7 @@ function Footer() {
             <a href="https://fb.me/RistekCSUI/" target="_blank">fb.me/RistekCSUI/</a>
             <a href="https://twitter.com/RistekCSUI" target="_blank">@RistekCSUI</a>
           </div>
-          <a href="https://line.me/R/ti/p/UGlp3KFY5i" target="_blank"><img src={Barcode} alt="OA Line" /></a>
+          <a href="https://line.me/R/ti/p/UGlp3KFY5i" target="_blank"><img src={props.barcode} alt="OA Line" /></a>
         </SocialSet>
       </div>
     </Foot>

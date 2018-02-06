@@ -15,7 +15,7 @@ module.exports = (options) => ({
   entry: options.entry,
   output: Object.assign({ // Compile into js/build.js
     path: path.resolve(process.cwd(), 'build'),
-    publicPath: '/',
+    publicPath: '/oprec/',
   }, options.output), // Merge with env dependent settings
   module: {
     rules: [
@@ -53,11 +53,11 @@ module.exports = (options) => ({
             loader: 'image-webpack-loader',
             options: {
               progressive: true,
-              optimizationLevel: 7,
+              optimizationLevel: 1,
               interlaced: false,
               pngquant: {
-                quality: '65-90',
-                speed: 4,
+                quality: '15-70',
+                speed: 7,
               },
             },
           },

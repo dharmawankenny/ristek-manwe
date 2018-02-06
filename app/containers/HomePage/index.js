@@ -11,6 +11,7 @@
 
 import React from 'react';
 import PropTypes, { func, object } from 'prop-types';
+import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -65,26 +66,11 @@ export class HomePage extends React.PureComponent {
 
     window.addEventListener('message', this.receiveLoginData, false);
 
-    const userData = this.getCookie('user_oprec_ristek');
+    const userData = window.localStorage.getItem('user_oprec_ristek');
 
     if (userData !== '') {
       this.props.setUser(JSON.parse(userData));
     }
-  }
-
-  getCookie(cname) {
-    const name = `${cname}=`;
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i += 1) {
-      let c = ca[i];
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return '';
   }
 
   /**
@@ -100,19 +86,13 @@ export class HomePage extends React.PureComponent {
     if (origin === SSO_DOMAIN) {
       this.props.setUser(user);
 
-      // set cookies
-      const d = new Date();
-      d.setTime(d.getTime() + 60 * 60 * 1000);
-      const expires = `expires=${d.toUTCString()}`;
-      document.cookie = `user_oprec_ristek=${JSON.stringify(
-        event.data
-      )};expires=${expires};path=[ristek.cs.ui.ac.id/oprec/]`;
+      window.localStorage.setItem('user_oprec_ristek', JSON.stringify(user));
 
       // redirect after login success
       if (isEmpty(user.user_profile)) {
-        this.props.push('/oprec/daftar');
+        this.props.push(Sitemap.register);
       } else {
-        this.props.push('/oprec/dashboard');
+        this.props.push(Sitemap.dashboard);
       }
     }
   };
@@ -141,7 +121,21 @@ export class HomePage extends React.PureComponent {
     }
   };
 
+  navigate = () => {
+    const { user } = this.props.global;
+
+    if (isEmpty(user)) {
+      this.login();
+    } else if (isEmpty(user.user_profile)) {
+      this.props.push(Sitemap.register);
+    } else {
+      this.props.push(Sitemap.dashboard);
+    }
+  };
+
   render() {
+    const { user } = this.props.global;
+
     return (
       <Landing>
         <img src={LandingMan} alt="The Man" />
@@ -151,8 +145,18 @@ export class HomePage extends React.PureComponent {
             Open Recruitment<br />
             <span>Anggota Ristek 2018</span>
           </h1>
-          <button className="yellow" onClick={this.login}>
-            Login SSO
+          <button
+            className="yellow"
+            onClick={this.navigate}
+          >
+            {isEmpty(user) &&
+              'Login SSO'}
+            {!isEmpty(user) &&
+              isEmpty(user.user_profile) &&
+              'Form Pendaftaran'}
+            {!isEmpty(user) &&
+              !isEmpty(user.user_profile) &&
+              'Dashboard'}
           </button>
           <Link to={Sitemap.encyclopedia}>Ensiklopedia</Link>
         </Info>
@@ -295,6 +299,7 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatch,
     setUser: (user) => dispatch(setUser(user)),
+    push: (url) => dispatch(push(url)),
   };
 }
 

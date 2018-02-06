@@ -21,16 +21,20 @@ import Favicon32 from 'images/favicon-32x32.png';
 import Favicon16 from 'images/favicon-16x16.png';
 import MaskIcon from 'images/safari-pinned-tab.svg';
 
+import LogoImg from 'images/ftrlogo.png';
+import BarcodeImg from 'images/ftrbrcd.png';
+
 import { media } from 'common/theme';
 import Sitemap from 'common/routing';
 
 import Footer from 'components/Footer';
 
-import Dashboard from 'containers/Dashboard/Loadable';
-import Encyclopedia from 'containers/Encyclopedia/Loadable';
-import HomePage from 'containers/HomePage/Loadable';
-import Register from 'containers/Register/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
+import Dashboard from 'containers/Dashboard';
+import Encyclopedia from 'containers/Encyclopedia';
+import HomePage from 'containers/HomePage';
+import Register from 'containers/Register';
+import NotFoundPage from 'containers/NotFoundPage';
+import LogOut from 'containers/LogOut';
 
 export default function App() {
   return (
@@ -58,10 +62,11 @@ export default function App() {
           <Route exact path={Sitemap.encyclopedia} component={Encyclopedia} />
           <Route exact path={Sitemap.register} component={Register} />
           <Route exact path={Sitemap.dashboard} component={Dashboard} />
+          <Route exact path={Sitemap.logout} component={LogOut} />
           <Route component={NotFoundPage} />
         </Switch>
       </div>
-      <Footer />
+      <Footer logo={LogoImg} barcode={BarcodeImg} />
     </Main>
   );
 }

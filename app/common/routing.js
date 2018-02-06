@@ -1,8 +1,9 @@
 const Sitemap = {
-  index: '/',
-  encyclopedia: '/encyclopedia',
-  register: '/register',
-  dashboard: '/dashboard',
+  index: '/oprec/',
+  encyclopedia: '/oprec/encyclopedia',
+  register: '/oprec/register',
+  dashboard: '/oprec/dashboard',
+  logout: '/oprec/logout',
 };
 
 export const API_BASE = 'http://ristek.cs.ui.ac.id/oprec/api/v1/';
