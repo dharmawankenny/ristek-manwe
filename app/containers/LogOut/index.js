@@ -61,7 +61,7 @@ export class LogOut extends React.Component { // eslint-disable-line react/prefe
             { name: 'description', content: 'Logging out from Open Recruitment Platform' },
           ]}
         />
-        <Header>Logging Out</Header>
+        <Header>Logging you out, please wait.</Header>
       </Main>
     );
   }

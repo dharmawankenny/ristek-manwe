@@ -16,9 +16,9 @@ import selectGlobal from 'global-selectors';
 
 import {
   loading,
-  loadingDone,
-  loadingErr,
-  setUserProfile,
+  success,
+  error,
+  setUser,
   editFlashMessage,
 } from 'global-actions';
 
@@ -53,22 +53,17 @@ export function* submitTask(action) {
   if (!submitCall.err) {
     const newUser = globalState.user;
     newUser.user_profile.submissions.push(submitCall.data);
-    yield put(setUserProfile(newUser));
+    yield put(setUser(newUser));
 
     // set cookies
-    const d = new Date();
-    d.setTime(d.getTime() + 60 * 60 * 1000);
-    const expires = `expires=${d.toUTCString()}`;
-    document.cookie = `user_oprec_ristek=${JSON.stringify(
-      newUser
-    )};expires=${expires};path=[ristek.cs.ui.ac.id/oprec/]`;
+    window.localStorage.setItem('user_oprec_ristek', JSON.stringify(newUser));
     yield put(editFlashMessage('Submission has been uploaded'));
-    yield put(loadingDone());
+    yield put(success());
   } else if (submitCall.err.response.status === 403) {
     yield put(editFlashMessage('Submission failed, deadline overdue'));
-    yield put(loadingDone());
+    yield put(success());
   } else {
-    yield put(loadingErr());
+    yield put(error());
   }
 }
 

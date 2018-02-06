@@ -8,7 +8,7 @@ import { API_BASE, API_SECTIONS, API_USER_PROFILE } from 'global-constants';
 
 import selectGlobal from 'global-selectors';
 
-import { setUser } from 'global-actions';
+import { setUser, loading as globalLoading, success, error } from 'global-actions';
 
 import selectSignUpForm from './selectors';
 import { FETCH_INITIAL, POST } from './constants';
@@ -25,8 +25,6 @@ export function* fetchSection(action) {
 
   const requestURL = `${API_BASE}${API_SECTIONS}`;
   const auth = `JWT ${token}`;
-
-  console.log('harambe');
 
   const fetchSectionCall = yield call(request, requestURL, {
     method: 'GET',
@@ -47,7 +45,7 @@ export function* fetchSectionSaga() {
 }
 
 export function* postData() {
-  yield put(loading());
+  yield put(globalLoading());
   const globalState = yield select(selectGlobal());
   const localState = yield select(selectSignUpForm());
   const token = globalState.user.token;
@@ -92,13 +90,11 @@ export function* postData() {
     yield put(setUser(newUser));
 
     // set cookies
-    const d = new Date();
-    d.setTime(d.getTime() + 60 * 60 * 1000);
-    const expires = `expires=${d.toUTCString()}`;
-    document.cookie = `user_oprec_ristek=${JSON.stringify(
-      newUser
-    )};expires=${expires};path=[ristek.cs.ui.ac.id/oprec]`;
+    window.localStorage.setItem('user_oprec_ristek', JSON.stringify(newUser));
+    yield put(success());
     yield put(push('/oprec/dashboard'));
+  } else {
+    yield put(error());
   }
 }
 

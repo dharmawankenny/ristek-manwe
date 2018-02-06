@@ -23,6 +23,7 @@ import MaskIcon from 'images/safari-pinned-tab.svg';
 
 import LogoImg from 'images/ftrlogo.png';
 import BarcodeImg from 'images/ftrbrcd.png';
+import PapaImg from 'images/paparistek.png';
 
 import { media } from 'common/theme';
 import Sitemap from 'common/routing';
@@ -59,7 +60,7 @@ export default function App() {
       <div className="content">
         <Switch>
           <Route exact path={Sitemap.index} component={HomePage} />
-          <Route exact path={Sitemap.encyclopedia} component={Encyclopedia} />
+          <Route exact path={Sitemap.encyclopedia} component={() => <Encyclopedia papa={PapaImg} />} />
           <Route exact path={Sitemap.register} component={Register} />
           <Route exact path={Sitemap.dashboard} component={Dashboard} />
           <Route exact path={Sitemap.logout} component={LogOut} />
