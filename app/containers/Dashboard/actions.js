@@ -21,11 +21,12 @@ export function changeFileInput(submissionTarget) {
   };
 }
 
-export function submitTask(submissionTarget) {
+export function submitTask({ section, file_link }) {
   return {
     type: SUBMIT_TASK,
     payload: {
-      submissionTarget,
+      section,
+      file_link,
     },
   };
 }

@@ -32,48 +32,22 @@ export function* submitTask(action) {
   const requestURL = `${API_BASE}${API_SUBMISSIONS}`;
   const auth = `JWT ${token}`;
 
-  const inputFirstDivision = document.querySelector(
-    'input[name=first_division_task_upload]'
-  );
-  const inputSecondDivision = document.querySelector(
-    'input[name=second_division_task_upload]'
-  );
+  const { payload } = action;
 
-  const data = new FormData();
-
-  if (action.payload.submissionTarget === 0) {
-    if (inputFirstDivision.files.length > 0) {
-      data.append('attachment', inputFirstDivision.files[0]);
-      data.append('user_profile', globalState.user.user_profile.id);
-      data.append('division', globalState.user.user_profile.first_division.id);
-      data.append(
-        'section',
-        globalState.user.user_profile.first_division.section.id
-      );
-
-      inputFirstDivision.value = null;
-    }
-  } else if (action.payload.submissionTarget === 1) {
-    if (inputSecondDivision.files.length > 0) {
-      data.append('attachment', inputSecondDivision.files[0]);
-      data.append('user_profile', globalState.user.user_profile.id);
-      data.append('division', globalState.user.user_profile.second_division.id);
-      data.append(
-        'section',
-        globalState.user.user_profile.second_division.section.id
-      );
-
-      inputSecondDivision.value = null;
-    }
-  }
+  const data = {
+    ...payload,
+    user_profile: globalState.user.user_profile.id,
+  };
 
   // call file upload to API
   const submitCall = yield call(request, requestURL, {
     method: 'POST',
     headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
       Authorization: auth,
     },
-    body: data,
+    body: JSON.stringify(data),
   });
 
   if (!submitCall.err) {
@@ -88,18 +62,10 @@ export function* submitTask(action) {
     document.cookie = `user_oprec_ristek=${JSON.stringify(
       newUser
     )};expires=${expires};path=[ristek.cs.ui.ac.id/oprec/]`;
-    yield put(
-      editFlashMessage(
-        `Submission ${data.get('attachment').name} has been uploaded`
-      )
-    );
+    yield put(editFlashMessage('Submission has been uploaded'));
     yield put(loadingDone());
   } else if (submitCall.err.response.status === 403) {
-    yield put(
-      editFlashMessage(
-        `Submission ${data.get('attachment').name} failed, deadline overdue`
-      )
-    );
+    yield put(editFlashMessage('Submission failed, deadline overdue'));
     yield put(loadingDone());
   } else {
     yield put(loadingErr());

@@ -24,6 +24,7 @@ import { media } from 'common/theme';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
+import { submitTask } from './actions';
 import makeSelectDashboard from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -34,7 +35,12 @@ export class Dashboard extends React.Component {
     setUser: func.isRequired,
     push: func.isRequired,
     logout: func.isRequired,
+    submitTask: func.isRequired,
   };
+
+  state = {
+    taskInput: {},
+  }
 
   componentDidMount() {
     let userData = this.getCookie('user_oprec_ristek');
@@ -75,6 +81,13 @@ export class Dashboard extends React.Component {
     return '';
   }
 
+  handleTaskSubmit = (section, taskId) => () => {
+    this.props.submitTask({
+      section: section,
+      file_link: this.state.taskInput[taskId],
+    });
+  };
+
   render() {
     const { global } = this.props;
     const firstDivisionTasks = get(
@@ -114,11 +127,12 @@ export class Dashboard extends React.Component {
             <h4>Lampiran: {task.description_link}</h4>
             <div className="inputWrapper">
               <input
-                disabled
                 type="text"
                 placeholder="Masukkan link submission"
+                value={get(this.state.taskInput, task.id, '')}
+                onChange={this.handleTaskInputChange(task.id)}
               />
-              <button disabled>Submit Tugas</button>
+              <button onClick={this.handleTaskSubmit(global.user.user_profile.first_section.id, task.id)}>Submit Tugas</button>
             </div>
           </Task>
         ))}
@@ -129,11 +143,12 @@ export class Dashboard extends React.Component {
             <h4>Lampiran: {task.description_link}</h4>
             <div className="inputWrapper">
               <input
-                disabled
                 type="text"
                 placeholder="Masukkan link submission"
+                value={get(this.state.taskInput, task.id, '')}
+                onChange={this.handleTaskInputChange(task.id)}
               />
-              <button disabled>Submit Tugas</button>
+              <button onClick={this.handleTaskSubmit(global.user.user_profile.second_section.id, task.id)}>Submit Tugas</button>
             </div>
           </Task>
         ))}
@@ -354,6 +369,7 @@ function mapDispatchToProps(dispatch) {
     setUser: (user) => dispatch(setUser(user)),
     push: (url) => dispatch(push(url)),
     logout: () => dispatch(logout()),
+    submitTask: (target) => dispatch(submitTask(target)),
   };
 }
 
