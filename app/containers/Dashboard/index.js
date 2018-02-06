@@ -40,7 +40,7 @@ export class Dashboard extends React.Component {
 
   state = {
     taskInput: {},
-  }
+  };
 
   componentDidMount() {
     let userData = this.getCookie('user_oprec_ristek');
@@ -81,9 +81,18 @@ export class Dashboard extends React.Component {
     return '';
   }
 
+  handleTaskInputChange = (taskId) => (e) => {
+    this.setState({
+      taskInput: {
+        ...this.state.taskInput,
+        [taskId]: e.target.value,
+      },
+    });
+  };
+
   handleTaskSubmit = (section, taskId) => () => {
     this.props.submitTask({
-      section: section,
+      section,
       file_link: this.state.taskInput[taskId],
     });
   };
@@ -132,7 +141,14 @@ export class Dashboard extends React.Component {
                 value={get(this.state.taskInput, task.id, '')}
                 onChange={this.handleTaskInputChange(task.id)}
               />
-              <button onClick={this.handleTaskSubmit(global.user.user_profile.first_section.id, task.id)}>Submit Tugas</button>
+              <button
+                onClick={this.handleTaskSubmit(
+                  global.user.user_profile.first_section.id,
+                  task.id
+                )}
+              >
+                Submit Tugas
+              </button>
             </div>
           </Task>
         ))}
@@ -148,7 +164,14 @@ export class Dashboard extends React.Component {
                 value={get(this.state.taskInput, task.id, '')}
                 onChange={this.handleTaskInputChange(task.id)}
               />
-              <button onClick={this.handleTaskSubmit(global.user.user_profile.second_section.id, task.id)}>Submit Tugas</button>
+              <button
+                onClick={this.handleTaskSubmit(
+                  global.user.user_profile.second_section.id,
+                  task.id
+                )}
+              >
+                Submit Tugas
+              </button>
             </div>
           </Task>
         ))}
