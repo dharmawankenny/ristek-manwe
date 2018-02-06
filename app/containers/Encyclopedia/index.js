@@ -36,7 +36,7 @@ export class Encyclopedia extends React.Component { // eslint-disable-line react
       {
         title: 'Human Resource',
         content:
-          'Malesuada hendrerit a litora ultrices vitae libero in enim scelerisque scelerisque sagittis facilisi adipiscing ipsum dui purus orci dictumst nullam quis laoreet magna a vel. A ullamcorper a lorem diam orci vestibulum id nisi quis eros ullamcorper elementum fermentum a non tincidunt scelerisque dui vel a dui vestibulum. Augue vestibulum nascetur pharetra inceptos libero non in turpis ad condimentum elit condimentum pulvinar adipiscing vestibulum velit tortor a suspendisse senectus a nec neque eu turpis habitasse ante. Sapien curae pulvinar id magna egestas fringilla penatibus parturient condimentum natoque in mauris fusce parturient auctor nam quam parturient a diam urna dolor metus lacinia vestibulum dui sociosqu nullam. Consequat vestibulum vestibulum maecenas eros primis lectus ante molestie dapibus himenaeos viverra class natoque natoque felis dui potenti a vestibulum a aliquet nisl magnis eu a. Euismod at ligula fringilla at a cum facilisi vestibulum blandit duis ligula consectetur nibh dictumst scelerisque parturient diam integer a ante a adipiscing rhoncus ante curabitur eu orci. Taciti integer suspendisse scelerisque scelerisque euismod pharetra mus accumsan justo et vestibulum a parturient hac eu enim.<br />Consequat ad nascetur tristique sodales erat parturient sem praesent a ligula tristique adipiscing a ornare.Parturient justo gravida dictumst eu adipiscing a eu vestibulum.',
+          'Bidang yang membantu melakukan penyeleksian SDM Ristek 2018, membantu menangani masalah dalam ruang lingkup internal Ristek agar menunjang kinerja dalam proses pembelajaran serta membantu mengontrol proses berjalannya Ristek 2018 sesuai tujuan.',
       },
       {
         title: 'Public Relation',
@@ -136,20 +136,16 @@ export class Encyclopedia extends React.Component { // eslint-disable-line react
         </Heading>
         <Context>Prosedur & Persyaratan</Context>
         {procedural.map((procedure) => (
-          <EncyclopediaAccordion key={`accord-${procedure}`} item={procedure} />
+          <EncyclopediaAccordion key={`accord-${procedure.title}`} item={procedure} />
         ))}
         <Context>Divisi</Context>
         {divisions.map((division) => (
-          <EncyclopediaAccordion key={`accord-${division}`} item={division} />
+          <EncyclopediaAccordion key={`accord-${division.title}`} item={division} />
         ))}
       </Wrapper>
     );
   }
 }
-
-Encyclopedia.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
 
 const Wrapper = styled.div`
   width: 100%;
